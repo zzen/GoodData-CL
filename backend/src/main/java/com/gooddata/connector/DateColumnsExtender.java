@@ -47,10 +47,12 @@ public class DateColumnsExtender {
     private List<Integer> dateColumnIndexes;
     private List<DateTimeFormatter> dateColumnFormats;
     private List<SourceColumn> dates;
+    private int identityColumn = -1;
 
     public DateColumnsExtender(SourceSchema schema) {
         dateColumnIndexes = new ArrayList<Integer>();
         dateColumnFormats = new ArrayList<DateTimeFormatter>();
+        identityColumn = schema.getIdentityColumn();
         dates = schema.getDates();
         for(int i= 0; i < dates.size(); i++)  {
             SourceColumn c = dates.get(i);
@@ -61,6 +63,10 @@ public class DateColumnsExtender {
                     fmt = Constants.DEFAULT_DATETIME_FMT_STRING;
                 else
                     fmt = Constants.DEFAULT_DATE_FMT_STRING;
+            }
+            // in case of UNIX TIME we don't format but create the date from the UNIX time number
+            if(Constants.UNIX_DATE_FORMAT.equalsIgnoreCase(fmt)) {
+                fmt = Constants.DEFAULT_DATETIME_FMT_STRING;
             }
             dateColumnFormats.add(DateTimeFormat.forPattern(fmt));
         }
@@ -102,7 +108,9 @@ public class DateColumnsExtender {
         List<String> rowExt = new ArrayList<String>();
         for(int i = 0; i < dateColumnIndexes.size(); i++) {
             SourceColumn c = dates.get(i);
-            String dateValue = row[dateColumnIndexes.get(i)];
+            int idx = dateColumnIndexes.get(i);
+            int adjustedDataIndex = ((identityColumn >=0) && (idx >= identityColumn)) ? (idx-1) : (idx);
+            String dateValue = row[idx];
             if(dateValue != null && dateValue.trim().length()>0) {
                 try {
                     DateTimeFormatter formatter = dateColumnFormats.get(i);

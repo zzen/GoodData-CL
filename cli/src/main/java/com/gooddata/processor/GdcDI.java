@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Properties;
 
 import com.gooddata.connector.*;
+import com.gooddata.connector.FacebookConnector;
 import com.gooddata.integration.model.Column;
 import com.gooddata.integration.model.SLI;
 import com.gooddata.integration.rest.MetadataObject;
@@ -346,7 +347,7 @@ public class GdcDI implements Executor {
 
         if(cp.containsKey(CLI_PARAM_VERSION[0])) {
 
-            l.info("GoodData CL version 1.2.17-SNAPSHOT" +
+            l.info("GoodData CL version 1.2.17-BETA" +
                     ((BUILD_NUMBER.length()>0) ? ", build "+BUILD_NUMBER : "."));
             System.exit(0);
 
@@ -999,7 +1000,8 @@ public class GdcDI implements Executor {
             JdbcConnector.createConnector(),
             PtConnector.createConnector(),    
             DateDimensionConnector.createConnector(),
-            SfdcSalesConnector.createConnector2()
+            FacebookConnector.createConnector(),
+            FacebookInsightsConnector.createConnector()
         };
     }
     

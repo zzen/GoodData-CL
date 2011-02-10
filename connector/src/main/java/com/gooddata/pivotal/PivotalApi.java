@@ -23,6 +23,7 @@
 
 package com.gooddata.pivotal;
 
+import com.gooddata.connector.Constants;
 import com.gooddata.exception.GdcLoginException;
 import com.gooddata.exception.GdcRestApiException;
 import com.gooddata.exception.HttpMethodException;
@@ -83,6 +84,8 @@ public class PivotalApi {
      * List of column headers that will be included in the STORY dataset
      */
     private Set RECORD_STORIES = new HashSet();
+
+
     /**
      * List of DATE column headers (we need to convert dates to the ISO format)
      */
@@ -115,11 +118,10 @@ public class PivotalApi {
         this.setProjectId(prjId);
         client.getHostConfiguration().setHost(PIVOTAL_URL);
         // populate the STORY dataset columns
-        RECORD_STORIES.addAll(Arrays.asList(new String[] {"Id", "Labels", "Story", "Iteration", "Iteration Start",
-                "Iteration End", "Story Type", "Estimate", "Current State", "Created At", "Accepted At", "Deadline",
+        RECORD_STORIES.addAll(Arrays.asList(new String[]{"Id", "Labels", "Story", "Iteration", "Iteration Start",
+                "Iteration End", "Story Type", "Estimate", "Current State", "Created at", "Accepted at", "Deadline",
                 "Requested By", "Owned By", "URL"}));
-
-        DATE_COLUMNS.addAll(Arrays.asList(new String[] {"Iteration Start", "Iteration End", "Created At", "Accepted At",
+        DATE_COLUMNS.addAll(Arrays.asList(new String[] {"Iteration Start", "Iteration End", "Created at", "Accepted at",
                 "Deadline"}));
     }
 
@@ -233,7 +235,7 @@ public class PivotalApi {
         cw.writeNext(rec.toArray(new String[] {}));
     }
 
-    private DateTimeFormatter reader = DateTimeFormat.forPattern("MMM dd,yyyy");
+    private DateTimeFormatter reader = DateTimeFormat.forPattern("MMM dd, yyyy");
     private DateTimeFormatter writer = DateTimeFormat.forPattern("yyyy-MM-dd");
 
     /**
@@ -261,17 +263,131 @@ public class PivotalApi {
             return value;
     }
 
+
+    private final DateTimeFormatter baseFmt = DateTimeFormat.forPattern(Constants.DEFAULT_DATE_FMT_STRING);
+    private final DateTime base = baseFmt.parseDateTime("1900-01-03");
+
+
+    /**
+     * Computes the iteration velocity
+     * @param csvFile the incoming PT CSV file
+     * @param velocityIterationCount the number of iterations that the velocity is computed from
+     * @param velocities returned velocities
+     * @param releaseInfo releases
+     * @throws Exception in case of an IO issue
+     */
+    public void computeIterationVelocity(String csvFile, int velocityIterationCount,
+                                         Map<Integer,Double> velocities, Map<String,String> releaseInfo) throws IOException {
+        Map<Integer,Integer> estimates = new HashMap<Integer,Integer>();
+        CSVReader cr = FileUtil.createUtf8CsvReader(new File(csvFile));
+        String[] header = cr.readNext();
+        if(header != null && header.length>0) {
+            List<String> headerList = Arrays.asList(header);
+
+            int iterIdx = headerList.indexOf("Iteration");
+            int estIdx = headerList.indexOf("Estimate");
+            int idIdx = headerList.indexOf("Id");
+            int typeIdx = headerList.indexOf("Story Type");
+            int nameIdx = headerList.indexOf("Story");
+            if(iterIdx >=0 && estIdx>=0 && idIdx>=0 && typeIdx>=0 && nameIdx>=0) {
+                List<String> releaseBuffer = new ArrayList<String>();
+                String[] row = cr.readNext();
+                while(row != null && row.length > 0) {
+                    try {
+                        String id = row[idIdx];
+                        String type = row[typeIdx];
+                        String name = row[nameIdx];
+                        if(id != null && id.length()>0) {
+                            if(type != null && type.length()>0) {
+                                if("release".equalsIgnoreCase(type)) {
+                                    if(name != null && name.length()>0) {
+                                        for(String story : releaseBuffer) {
+                                            releaseInfo.put(story,name);
+                                        }
+                                        releaseInfo.put(id,name);
+                                        releaseBuffer.clear();
+                                    }
+                                    else {
+                                        cr.close();
+                                        throw new IOException("Release with no name.");
+                                    }
+                                }
+                                else {
+                                    releaseBuffer.add(id);
+                                }
+                            }
+                        }
+                        else {
+                            cr.close();
+                            throw new IOException("Story with empty Id.");
+                        }
+                        String iterTxt = row[iterIdx];
+                        String estTxt = row[estIdx];
+                        if(iterTxt != null && iterTxt.length()>0) {
+                            Integer iter = Integer.parseInt(iterTxt);
+                            Integer est = new Integer(0);
+                            if(estTxt!=null && estTxt.length()>0)
+                                est = Integer.parseInt(estTxt);
+                            if(estimates.containsKey(iter))  {
+                                Integer estimate = estimates.get(iter);
+                                estimate = new Integer(estimate.intValue() + est.intValue());
+                                estimates.put(iter,estimate);
+                            }
+                            else {
+                                estimates.put(iter,new Integer(est));
+                            }
+                        }
+                    }
+                    catch (ArrayIndexOutOfBoundsException e) {
+                        cr.close();
+                        throw new IOException("Iteration velocity computation failed: data row doesn't contain Id or Type or Iteration or Estimate fields.");
+                    }
+                    row = cr.readNext();
+                }
+                cr.close();
+                for (Integer iteration : estimates.keySet()) {
+                    int cnt = 0;
+                    int estimate = 0;
+                    for(int i = 1; i <= velocityIterationCount; i++) {
+                        if(estimates.containsKey(new Integer(iteration.intValue() - i))) {
+                            cnt++;
+                            estimate += estimates.get(new Integer(iteration.intValue() - i));
+                        }
+                    }
+                    double velocity = 0;
+                    if(cnt>0)
+                        velocity = (double)estimate / (double)cnt;
+                    velocities.put(iteration, new Double(velocity));
+
+                }
+            }
+            else {
+                cr.close();
+                throw new IOException("Iteration velocity computation failed: no Iteration or Estimate or Id or Type fields in header.");
+            }
+        }
+        else {
+            cr.close();
+            throw new IOException("Iteration velocity computation failed: empty PT input.");
+        }
+
+    }
+
+
     /**
      * Parses the PT CSV file into the STORY, LABEL, and LABEL_TO_STORY CSV files
      * @param csvFile the incoming PT CSV file
      * @param storiesCsv the output STORY CSV file
      * @param labelsCsv the output LABEL CSV file
      * @param labelsToStoriesCsv  the output LABEL_TO_STORY CSV file
-     * @param snapshotCsv  the output SNAPSHOTs CSV file
+     * @param velocityIterationCount the number of iterations that the velocity is computed from
      * @throws Exception in case of an IO issue
      */
-    public void parse(String csvFile, String storiesCsv, String labelsCsv, String labelsToStoriesCsv, String snapshotCsv, DateTime t) throws IOException {
+    public void parse(String csvFile, String storiesCsv, String labelsCsv, String labelsToStoriesCsv, DateTime t, int velocityIterationCount) throws IOException {
         String today = writer.print(t);
+        Map<Integer,Double> velocities = new HashMap<Integer,Double>();
+        Map<String,String> releases = new HashMap<String,String>();
+        computeIterationVelocity(csvFile, velocityIterationCount, velocities, releases);
         CSVReader cr = FileUtil.createUtf8CsvReader(new File(csvFile));
         String[] row = cr.readNext();
         if(row != null && row.length > 0) {
@@ -279,12 +395,10 @@ public class PivotalApi {
             List<String> storiesRecord = new ArrayList<String>();
             List<String> labelsRecord = new ArrayList<String>();
             List<String> labelsToStoriesRecord = new ArrayList<String>();
-            List<String> snapshotsRecord = new ArrayList<String>();
 
             CSVWriter storiesWriter = new CSVWriter(new FileWriter(storiesCsv));
             CSVWriter labelsWriter = new CSVWriter(new FileWriter(labelsCsv));
             CSVWriter labelsToStoriesWriter = new CSVWriter(new FileWriter(labelsToStoriesCsv));
-            CSVWriter snapshotsWriter = new CSVWriter(new FileWriter(snapshotCsv));
 
             labelsRecord.add("cpId");
             labelsRecord.add("Label Id");
@@ -292,46 +406,66 @@ public class PivotalApi {
             labelsToStoriesRecord.add("cpId");
             labelsToStoriesRecord.add("Story Id");
             labelsToStoriesRecord.add("Label Id");
-            snapshotsRecord.add("cpId");
-            snapshotsRecord.add("Story Id");
-            snapshotsRecord.add("Snapshot Date");
+
 
             for(String header : headers) {
-                if(RECORD_STORIES.contains(header))
+                if(RECORD_STORIES.contains(header)) {
                     storiesRecord.add(header);
+                    if(header.equalsIgnoreCase("Iteration")) {
+                        storiesRecord.add("IterationFact");
+                        storiesRecord.add("IterationVelocity");
+                    }
+                    if(header.equalsIgnoreCase("Id")) {
+                        storiesRecord.add("Release");
+                    }
+                }
             }
+            storiesRecord.add(0, "SnapshotDate");
             storiesRecord.add(0, "cpId");
             writeRecord(storiesWriter, storiesRecord);
             writeRecord(labelsWriter, labelsRecord);
             writeRecord(labelsToStoriesWriter, labelsToStoriesRecord);
-            writeRecord(snapshotsWriter , snapshotsRecord);
 
             Map<String,String> labels = new HashMap<String, String>();
-            int labelId = 0;
             row = cr.readNext();
             while(row != null && row.length > 1) {
                 storiesRecord.clear();
                 labelsRecord.clear();
                 labelsToStoriesRecord.clear();
-                snapshotsRecord.clear();
                 String storyId = "";
                 String label = "";
-                String key = "";
+                String key = today+"|";
                 for(int i=0; i < headers.size(); i++) {
                     String header = headers.get(i);
                     if(RECORD_STORIES.contains(header)) {
                         key += row[i] + "|";
                         storiesRecord.add(convertDate(header, row[i]));
+                        if(header.equalsIgnoreCase("Id")) {
+                            String id = row[i];
+                            String release = "";
+                            if(releases.containsKey(id)) {
+                                release = releases.get(id);
+                            }
+                            storiesRecord.add(release);
+                        }
+                        if(header.equalsIgnoreCase("Iteration")) {
+                            storiesRecord.add(convertDate(header, row[i]));
+                            if(row[i] != null && row[i].length()>0) {
+                                Integer iteration = Integer.parseInt(row[i]);
+                                storiesRecord.add(convertDate(header, velocities.get(iteration).toString()));
+                            }
+                            else {
+                                storiesRecord.add(convertDate(header, "0"));
+                            }
+                        }
                     }
                     if(HEADER_LABEL.equals(header)) {
                         label = row[i];
                     }
                 }
                 storyId = DigestUtils.md5Hex(key);
+                storiesRecord.add(0, today);
                 storiesRecord.add(0, storyId);
-                snapshotsRecord.add(storyId);
-                snapshotsRecord.add(today);
-                snapshotsRecord.add(0, DigestUtils.md5Hex(storyId+"|"+today));
                 String[] lbls = label.split(",");
                 for(String lbl : lbls) {
                     lbl = lbl.trim();
@@ -344,11 +478,8 @@ public class PivotalApi {
                             writeRecord(labelsToStoriesWriter, labelsToStoriesRecord);
                         }
                         else {
-                            labelId++;
-                            String lblId = Integer.toString(labelId);
-                            String id = DigestUtils.md5Hex(lblId + "|" + lbl);
+                            String id = DigestUtils.md5Hex(lbl);
                             labels.put(lbl, id);
-                            labelsRecord.add(lblId);
                             labelsRecord.add(lbl);
                             labelsRecord.add(0, id);
                             labelsToStoriesRecord.add(storyId);
@@ -362,13 +493,10 @@ public class PivotalApi {
                     labelsToStoriesRecord.clear();                   
                 }
                 writeRecord(storiesWriter, storiesRecord);
-                writeRecord(snapshotsWriter, snapshotsRecord);
                 row = cr.readNext();
             }
             storiesWriter.flush();
             storiesWriter.close();
-            snapshotsWriter.flush();
-            snapshotsWriter.close();
             labelsWriter.flush();
             labelsWriter.close();
             labelsToStoriesWriter.flush();

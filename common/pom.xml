@@ -28,7 +28,7 @@
 	<parent>
 		<groupId>com.gooddata.cl</groupId>
 		<artifactId>gooddata-cl</artifactId>
-		<version>1.2.17-SNAPSHOT</version>
+		<version>1.2.17-BETA</version>
 	</parent>
 
 	<artifactId>gooddata-cl-common</artifactId>
@@ -51,10 +51,6 @@
 			<artifactId>json-lib</artifactId>
 	        <classifier>jdk15</classifier>
 		</dependency>
-        <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-jaxrs</artifactId>
-        </dependency>
 		<dependency>
 			<groupId>net.sf.opencsv</groupId>
 			<artifactId>opencsv</artifactId>

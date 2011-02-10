@@ -27,7 +27,7 @@
 	<parent>
 		<groupId>com.gooddata.cl</groupId>
 		<artifactId>gooddata-cl</artifactId>
-		<version>1.2.17-SNAPSHOT</version>
+		<version>1.2.17-BETA</version>
 	</parent>
 
 	<artifactId>gooddata-cl-connector</artifactId>
@@ -66,6 +66,23 @@
 			<groupId>axis</groupId>
 			<artifactId>axis</artifactId>
 		</dependency>
-
+        <dependency>
+            <groupId>javassist</groupId>
+            <artifactId>javassist</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>oauth.signpost</groupId>
+            <artifactId>signpost-core</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>oauth.signpost</groupId>
+            <artifactId>signpost-commonshttp4</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.googlecode.json-simple</groupId>
+            <artifactId>json-simple</artifactId>
+        </dependency>
 	</dependencies>
 </project>
