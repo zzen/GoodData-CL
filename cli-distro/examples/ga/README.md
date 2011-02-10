@@ -31,16 +31,12 @@ I'm sure you have noticed the `startDate` and the `endDate` parameters and guess
 
 After you have customized the `cmd.create.txt` script, you can try the Google Analytics example by running the following command:
 
-_Windows:_
-
-    c:> bin\gdi.bat -u <username> -p <password> examples\ga\ga.txt
-    Project id = 'f5977852bfec20271d4c9bc453a263cb' created.
-
-
-_Unix like OS (Linux, Mac OS X and others):_
-
-    $ ./bin/gdi.sh -u <username> -p <password> examples/ga/ga.txt
-    Project id = 'f5977852bfec20271d4c9bc453a263cb' created.
+<div class="platforms">
+    <pre class="win"><code>c:&gt; bin\gdi.bat -u &lt;username&gt; -p &lt;password&gt; examples\ga\ga.txt
+    Project id = 'f5977852bfec20271d4c9bc453a263cb' created.</code></pre>
+    <pre class="unix"><code>$ ./bin/gdi.sh -u &lt;username&gt; -p &lt;password&gt; examples/ga/ga.txt
+    Project id = 'f5977852bfec20271d4c9bc453a263cb' created.</code></pre>
+</div>
 
 ## What Next?
 

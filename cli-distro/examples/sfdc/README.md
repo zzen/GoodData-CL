@@ -4,19 +4,16 @@
 
 The SFDC example shows how to create a GoodData project that models basic SFDC objects and populates the project directly from your SFDC account.
 
-_Windows:_
-
-    c:> bin\gdi.bat -u <username> -p <password> examples\sfdc\sfdc.txt
-    Project id = 'wuw52aoc8z6rjvd1ufem23zxhdeuukm3' created.
-    Data successfully loaded.
-    Data successfully loaded.
-
-_Unix like OS (Linux, Mac OS X and others):_
-
-    $ ./bin/gdi.sh -u <username> -p <password> examples/sfdc/sfdc.txt
-    Project id = 'wuw52aoc8z6rjvd1ufem23zxhdeuukm3' created.
-    Data successfully loaded.
-    Data successfully loaded.
+<div class="platforms">
+    <pre class="win"><code>c:&gt; bin\gdi.bat -u &lt;username&gt; -p &lt;password&gt; examples\sfdc\sfdc.txt
+Project id = 'wuw52aoc8z6rjvd1ufem23zxhdeuukm3' created.
+Data successfully loaded.
+Data successfully loaded.</code></pre>
+    <pre class="unix"><code>$ ./bin/gdi.sh -u &lt;username&gt; -p &lt;password&gt; examples/sfdc/sfdc.txt
+Project id = 'wuw52aoc8z6rjvd1ufem23zxhdeuukm3' created.
+Data successfully loaded.
+Data successfully loaded.</code></pre>
+</div>
 
 Note: this example fetches sample data from GoodData's demo account at SalesForce. 
 

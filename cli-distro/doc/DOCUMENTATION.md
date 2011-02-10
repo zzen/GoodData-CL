@@ -6,12 +6,20 @@ For initial installation, please refer to the [README](http://developer.gooddata
 
 1. The utility is invoked using the gdi.sh shell script. In each run, you need to provide your GoodData username and password:
 
-        $ ./bin/gdi.sh -u <username> -p <password>
+    <div class="platforms">
+        <pre class="win"><code>C:&gt; bin\gdi.bat -u &lt;username&gt; -p &lt;password&gt;</code></pre>
+        <pre class="unix"><code>$ ./bin/gdi.sh -u &lt;username&gt; -p &lt;password&gt;</code></pre>
+    </div>
+
 
 2. You can either run a command through the -e parameter or specify path to a text file with commands:
 
-        $ ./bin/gdi.sh -u <username> -p <password> -e 'CreateProject("my project");'
-        $ ./bin/gdi.sh -u <username> -p <password> /path/to/commands.txt
+    <div class="platforms">
+        <pre class="win"><code> C:&gt; bin\gdi.bat -u &lt;username&gt; -p &lt;password&gt; -e "CreateProject('my project');"
+    C:&gt; ./bin/gdi.sh -u &lt;username&gt; -p &lt;password&gt; /path/to/commands.txt</code></pre>
+        <pre class="unix"><code> $ ./bin/gdi.sh -u &lt;username&gt; -p &lt;password&gt; -e 'CreateProject("my project");'
+    $ ./bin/gdi.sh -u &lt;username&gt; -p &lt;password&gt; /path/to/commands.txt</code></pre>
+    </div>
 
 3. A [list of commands](http://developer.gooddata.com/gooddata-cl/cli-commands.html) and descriptions is displayed when you run `gdi.sh` without parameter.
 

@@ -1,4 +1,4 @@
-# GoodData CL Architecture
+# Source Code Architecture
 
 The GoodData CL framework. The framework wraps various GoodData HTTP APIs (authentication, provisioning, modeling, and dat loading) in convenient Java methods. Here is a simple diagram of the GoodData CL Framework:
  

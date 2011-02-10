@@ -6,10 +6,7 @@ When working with JDBC driver to download data from your SQL database, it is som
 
 Configure the `cmd.txt` file with your own JDBC driver / query URL and then run:
 
-_Windows:_
-
-    c:> bin\gdi.bat -u <username> -p <password> examples\jdbc-export\cmd.txt
-
-_Unix like OS (Linux, Mac OS X and others):_
-
-    $ ./bin/gdi.sh -u <username> -p <password> examples/jdbc-export/cmd.txt
+<div class="platforms">
+    <pre class="win"><code>c:&gt; bin\gdi.bat -u &lt;username&gt; -p &lt;password&gt; examples\jdbc-export\cmd.txt</code></pre>
+    <pre class="unix"><code>$ ./bin/gdi.sh -u &lt;username&gt; -p &lt;password&gt; examples/jdbc-export/cmd.txt</code></pre>
+</div>

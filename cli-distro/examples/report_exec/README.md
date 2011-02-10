@@ -13,10 +13,7 @@ project ID.
 
 Run `gdi.sh` with the `report_exec.txt` script as follows:
 
-_Windows:_
-
-        c:> bin\gdi.bat -u <username> -p <password> examples\report_exec\report_exec.txt
-
-_Unix like OS (Linux, Mac OS X and others):_
-
-        $ ./bin/gdi.sh -u <username> -p <password> examples/report_exec/report_exec.txt
+<div class="platforms">
+    <pre class="win"><code>c:&gt; bin\gdi.bat -u &lt;username&gt; -p &lt;password&gt; examples\report_exec\report_exec.txt</code></pre>
+    <pre class="unix"><code>$ ./bin/gdi.sh -u &lt;username&gt; -p &lt;password&gt; examples/report_exec/report_exec.txt</code></pre>
+</div>

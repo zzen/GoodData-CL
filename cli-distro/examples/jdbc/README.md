@@ -4,15 +4,12 @@ This example shows how to connect an existing database accessible via JDBC, and 
 
 Run `gdi.sh` with the `fundamentals.txt` script. The script uses the `fundamentals.config.xml` configuration.
 
-_Windows:_
-
-    c:> bin\gdi.bat -u <username> -p <password> examples\jdbc\fundamentals.txt
-    Project id = 'yz5uq4am9ip3vxiou6m8xntd81r8qdh6' created.
-
-_Unix like OS (Linux, Mac OS X and others):_
-
-    $ ./bin/gdi.sh -u <username> -p <password> examples/jdbc/fundamentals.txt
-    Project id = 'yz5uq4am9ip3vxiou6m8xntd81r8qdh6' created.
+<div class="platforms">
+    <pre class="win"><code>c:&gt; bin\gdi.bat -u &lt;username&gt; -p &lt;password&gt; examples\jdbc\fundamentals.txt
+    Project id = 'yz5uq4am9ip3vxiou6m8xntd81r8qdh6' created.</code></pre>
+    <pre class="unix"><code>$ ./bin/gdi.sh -u &lt;username&gt; -p &lt;password&gt; examples/jdbc/fundamentals.txt
+    Project id = 'yz5uq4am9ip3vxiou6m8xntd81r8qdh6' created.</code></pre>
+</div>
 
 
 ## What Next?
@@ -70,13 +67,10 @@ Copy the `GenerateJdbcConfig` command to a new file and save it as `configure.tx
 
 Then you can generate your configuration file by executing your `configure.txt` with the `bin/gdi.sh` or `bin/gdi.bat` tool as follows:
 
-_Windows:_
-
-    c:> bin\gdi.sh -u <username> -p <password> configure.txt
-
-_Unix like OS (Linux, Mac OS X and others):_
-
-    $ ./bin/gdi.sh -u <username> -p <password> configure.txt
+<div class="platforms">
+    <pre><code>c:&gt; bin\gdi.bat -u &lt;username&gt; -p &lt;password&gt; configure.txt</code></pre>
+    <pre><code>$ ./bin/gdi.sh -u &lt;username&gt; -p &lt;password&gt; configure.txt</code></pre>
+</div>
 
 ### Review the configuration file
 

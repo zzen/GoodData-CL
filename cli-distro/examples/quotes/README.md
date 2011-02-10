@@ -4,15 +4,12 @@ This basic example loads a CSV data file containing stock quotes from the AMEX, 
 
 Run `gdi.sh` with the `quotes.txt` script as follows:
 
-_Windows:_
-
-    c:> bin\gdi.bat -u <username> -p <password> examples\quotes\quotes.txt
-    Project id = 'f5977852bfec20271d4c9bc453a263cb' created.
-
-_Unix like OS (Linux, Mac OS X and others):_
-
-    $ ./bin/gdi.sh -u <username> -p <password> examples/quotes/quotes.txt
-    Project id = 'f5977852bfec20271d4c9bc453a263cb' created.
+<div class="platforms">
+    <pre class="win"><code>c:&gt; bin\gdi.bat -u &lt;username&gt; -p &lt;password&gt; examples\quotes\quotes.txt
+Project id = 'f5977852bfec20271d4c9bc453a263cb' created.</code></pre>
+    <pre class="unix"><code>$ ./bin/gdi.sh -u &lt;username&gt; -p &lt;password&gt; examples/quotes/quotes.txt
+Project id = 'f5977852bfec20271d4c9bc453a263cb' created.</code></pre>
+</div>
 
 This creates a "Quotes" project in GoodData, sets up the data model and loads the data file into the project.
 

@@ -6,20 +6,16 @@ The HR example demonstrates how to use the basic CSV connector to quickly load v
 
 The departments data set is a minimalistic CSV that contains only a unique department identifier and a department name.
 
-Run `gdi.sh` script with the `1-department.txt` file to create a new GoodData project and the _Department_ data set containing fields as described in the `department.xml` file. 
+Run `gdi` script with the `1-department.txt` file to create a new GoodData project and the _Department_ data set containing fields as described in the `department.xml` file. 
 
-_Windows:_
-
-    c:> bin\gdi.bat -u <username> -p <password> examples\hr\1-department.txt
-    Project id = 'nfh4zj3itxkxhevu4a22t4xgeg41d5h0' created.
-    Data successfully loaded.
-
-
-_Unix like OS (Linux, Mac OS X and others):_
-
-    $ ./bin/gdi.sh -u <username> -p <password> examples/hr/1-department.txt
-    Project id = 'nfh4zj3itxkxhevu4a22t4xgeg41d5h0' created.
-    Data successfully loaded.
+<div class="platforms">
+    <pre class="win"><code>c:&gt; bin\gdi.bat -u &lt;username&gt; -p &lt;password&gt; examples\hr\1-department.txt
+Project id = 'nfh4zj3itxkxhevu4a22t4xgeg41d5h0' created.
+Data successfully loaded.</code></pre>
+    <pre class="unix"><code>$ ./bin/gdi.sh -u &lt;username&gt; -p &lt;password&gt; examples/hr/1-department.txt
+Project id = 'nfh4zj3itxkxhevu4a22t4xgeg41d5h0' created.
+Data successfully loaded.</code></pre>
+</div>
 
 ### What's Inside
 
@@ -36,19 +32,16 @@ The data model is simple so far, containing one _Department_ box  that represent
 The `employee.csv` data set contains employee names and departments.
 
 
-Run `gdi.sh` with the `2-employee.txt` file to add the 'Employee' dataset, connect it to 'Deparment' and populate it with data from the `employee.csv` file.
+Run `gdi` script with the `2-employee.txt` file to add the 'Employee' dataset, connect it to 'Deparment' and populate it with data from the `employee.csv` file.
 
-_Windows:_
-
-    c:> bin\gdi.bat -u <username> -p <password> examples\hr\2-employee.txt
-    Data successfully loaded.
-
-
-_Unix like OS (Linux, Mac OS X and others):_
-
-    $ ./bin/gdi.sh -u <username> -p <password> examples/hr/2-employee.txt
-    Data successfully loaded.
-
+<div class="platforms">
+    <pre class="win"><code>c:&gt; bin\gdi.bat -u &lt;username&gt; -p &lt;password&gt; examples\hr\2-employee.txt
+Project id = 'nfh4zj3itxkxhevu4a22t4xgeg41d5h0' created.
+Data successfully loaded.</code></pre>
+    <pre class="unix"><code>$ ./bin/gdi.sh -u &lt;username&gt; -p &lt;password&gt; examples/hr/2-employee.txt
+Project id = 'nfh4zj3itxkxhevu4a22t4xgeg41d5h0' created.
+Data successfully loaded.</code></pre>
+</div>
 
 ### What's Inside?
 
@@ -66,18 +59,15 @@ The Salary data set will enhance our project with information about who received
 
 It will be added, connected and populated by running the following command:
 
-_Windows:_
+<div class="platforms">
+    <pre class="win"><code>c:&gt; bin\gdi.bat -u &lt;username&gt; -p &lt;password&gt; examples\hr\3-salary.txt
+Project id = 'nfh4zj3itxkxhevu4a22t4xgeg41d5h0' created.
+Data successfully loaded.</code></pre>
+    <pre class="unix"><code>$ ./bin/gdi.sh -u &lt;username&gt; -p &lt;password&gt; examples/hr/3-salary.txt
+Project id = 'nfh4zj3itxkxhevu4a22t4xgeg41d5h0' created.
+Data successfully loaded.</code></pre>
+</div>
 
-    c:> bin\gdi.bat -u <username> -p <password> examples\hr\3-salary.txt
-    Data successfully loaded.
-
-
-_Unix like OS (Linux, Mac OS X and others):_
-
-    $ ./bin/gdi.sh -u <username> -p <password> examples/hr/3-salary.txt
-    Data successfully loaded.
-
-       
 ### What's Inside?
 
 As described in the `salary.xml` configuration file, this data set connnects to the `employee.csv` using the `EMPLOYEE_ID` field (`ldmType` is `REFERENCE`) and the date of payment is available in the `DATE` field (`ldmType` is `DATE`). Note the `DATE` field has the `schemaReference` set to `payment` which refers to the date dimension defined and created in the lines 9, 12 and 15 of the `3-salary.txt` script.
